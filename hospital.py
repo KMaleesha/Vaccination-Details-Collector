@@ -306,8 +306,6 @@ class Hospital:
         conn.close()
         messagebox.showinfo("Update",   "Record has been updated Successfully")
 
-
-
     def fatch_data(self):
         conn=mysql.connector.connect(host="localhost", user="root",password="Mmy.2019", database="mydata")
         my_cursor=conn.cursor()
