@@ -361,6 +361,7 @@ class Hospital:
         self.fatch_data()
         messagebox.showinfo("Delete", "Patient has been deleted successfully")
 
+
     def clear(self):
         # Clear all entry fields and text widget
         self.vaccine.set("")
