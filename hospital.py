@@ -27,7 +27,6 @@ class Hospital:
                     address text, nic_no text, age text, gender text, blood_grp text, DOB text,
                     effects text, body_temp text, blood_p text, contact_no text, email text, remark text)''')
         self.conn.commit()
-        # self.conn.close()
 
         self.vaccine=StringVar()
         self.name=StringVar()
@@ -95,12 +94,6 @@ class Hospital:
                                                                                 width=38)
         comNameVaccine["values"]=("Sinophram", "Pfizer", "AstraZeneca", "Moderna", "Sputnic V")
         comNameVaccine.grid(row=1,column=1)
-
-        # comNametablet = ttk.Combobox(DataframeLeft, textvariable=self.vaccine, state="readonly", font=("arial", 12))
-        # comNametablet['values'] = (
-        # "Sputnik", "Astrazeneca", "Pfizer", "Sinopharm", "Moderna", "Jhonson & Jhonson", "N/A")
-        # comNametablet.grid(row=0, column=1, padx=20, pady=10)
-
 
         lblPlace=Label(DataframeLeft,font=("times new roman",12,"bold"),text="Place of Vaccination",padx=2,pady=6)
         lblPlace.grid(row=2,column=0,sticky=W)
@@ -283,35 +276,6 @@ class Hospital:
         self.conn.commit()
         self.fatch_data()
         messagebox.showinfo("Success", "Record has been Inserted")
-        # if self.vaccine.get()=="" or self.name.get()=="":
-        #     messagebox.showerror("Error","All fiels are required.")
-        # else:
-        #     conn=mysql.connector.connect(host="localhost", user="root",password="Mmy.2019", database="mydata")
-        #     my_cursor=conn.cursor()
-        #     my_cursor.execute("insert into hospital values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(
-        #                                                     self.vaccine.get(),
-        #                                                     self.name.get(),
-        #                                                     self.place.get(),
-        #                                                     self.date.get(),
-        #                                                     self.batchno.get(),
-        #                                                     self.pname.get(),
-        #                                                     self.address.get(),
-        #                                                     self.nic.get(),
-        #                                                     self.age.get(),
-        #                                                     self.gender.get(),
-        #                                                     self.bloodgrp.get(),
-        #                                                     self.bod.get(),
-        #                                                     self.effects.get(),
-        #                                                     self.bodytemp.get(),
-        #                                                     self.bloodp.get(),
-        #                                                     self.contactno.get(),
-        #                                                     self.email.get(),
-        #                                                     self.remark.get()
-        #         ))
-        #     conn.commit()
-        #     self.fatch_data()
-        #     conn.close()
-        #     messagebox.showinfo("Success", "Record has been Inserted")
 
 
     def update_data(self):
