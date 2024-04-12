@@ -9,9 +9,7 @@ import datetime
 from tkinter import messagebox
 from tkinter.font import BOLD
 from webbrowser import get
-import mysql.connector
 import sqlite3
-
 
 class Hospital:
     def __init__(self, root):
@@ -54,7 +52,6 @@ class Hospital:
         # ===============================DATA FRAME============================== 
         Dataframe = Frame(self.root, bd=20, padx=20, relief=RIDGE)
         Dataframe.place(x=0, y=130, width=1530, height=400)
-        
 
         DataframeLeft=LabelFrame(Dataframe, bd=10, relief=RIDGE, padx=10,
                                     font=("times new romen",12,BOLD), text="Patient Information")
@@ -84,8 +81,6 @@ class Hospital:
                                                     width=38)
         comNametablet["values"]=("1 st Dose", "2 nd Dose", "3 rd Dose", "4 th Dose")
         comNametablet.grid(row=0,column=1)
-
-
 
         lblNameVaccine=Label(DataframeLeft, text="Name of the Vaccine", font=("times new roman",12,"bold"),padx=2,pady=6)
         lblNameVaccine.grid(row=1,column=0)
@@ -277,7 +272,6 @@ class Hospital:
         self.fatch_data()
         messagebox.showinfo("Success", "Record has been Inserted")
 
-
     def update_data(self):
         conn = sqlite3.connect('hospital.db')
         my_cursor = conn.cursor()
@@ -306,8 +300,6 @@ class Hospital:
                 self.hospital_table.insert("", END, values=i)
             self.conn.commit()
 
-
-
     def get_cursor(self, event = ""):
         cursor_row=self.hospital_table.focus()
         content=self.hospital_table.item(cursor_row)
@@ -331,7 +323,6 @@ class Hospital:
         self.email.set(row[16])
         self.remark.set(row[17])
 
-
     def iPrescription(self):
         self.txtPrescription.insert(END,"Covid-19 Vaccine \t\t\t:"+self.vaccine.get()+"\n")
         self.txtPrescription.insert(END,"Name of the Vaccine \t\t\t:"+self.name.get()+"\n")
@@ -352,15 +343,12 @@ class Hospital:
         self.txtPrescription.insert(END,"Email Address \t\t\t:"+self.email.get()+"\n")
         self.txtPrescription.insert(END,"Remark \t\t\t:"+self.remark.get()+"\n")
 
-
-
     def iDelete(self):
         # Delete record from SQLite table
         self.cursor.execute("DELETE FROM hospital WHERE batch_no=?", (self.batchno.get(),))
         self.conn.commit()
         self.fatch_data()
         messagebox.showinfo("Delete", "Patient has been deleted successfully")
-
 
     def clear(self):
         # Clear all entry fields and text widget
@@ -392,7 +380,6 @@ class Hospital:
     def __del__(self):
         # Close SQLite database connection
         self.conn.close()
-
 
 root=Tk()
 ob=Hospital(root)
