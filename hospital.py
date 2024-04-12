@@ -10,6 +10,7 @@ from tkinter import messagebox
 from tkinter.font import BOLD
 from webbrowser import get
 import mysql.connector
+import sqlite3
 
 
 class Hospital:
@@ -17,6 +18,16 @@ class Hospital:
         self.root = root
         self.root.title("Vaccination Detail Collector")
         self.root.geometry("1540x800+0+0")
+
+        # SQLite database connection
+        self.conn = sqlite3.connect('hospital.db')
+        self.cursor = self.conn.cursor()
+        self.cursor.execute('''CREATE TABLE IF NOT EXISTS hospital
+                    (vaccine_dose text, name text, place text, date text, batch_no text, p_name text,
+                    address text, nic_no text, age text, gender text, blood_grp text, DOB text,
+                    effects text, body_temp text, blood_p text, contact_no text, email text, remark text)''')
+        self.conn.commit()
+        # self.conn.close()
 
         self.vaccine=StringVar()
         self.name=StringVar()
@@ -84,6 +95,11 @@ class Hospital:
                                                                                 width=38)
         comNameVaccine["values"]=("Sinophram", "Pfizer", "AstraZeneca", "Moderna", "Sputnic V")
         comNameVaccine.grid(row=1,column=1)
+
+        # comNametablet = ttk.Combobox(DataframeLeft, textvariable=self.vaccine, state="readonly", font=("arial", 12))
+        # comNametablet['values'] = (
+        # "Sputnik", "Astrazeneca", "Pfizer", "Sinopharm", "Moderna", "Jhonson & Jhonson", "N/A")
+        # comNametablet.grid(row=0, column=1, padx=20, pady=10)
 
 
         lblPlace=Label(DataframeLeft,font=("times new roman",12,"bold"),text="Place of Vaccination",padx=2,pady=6)
@@ -257,66 +273,74 @@ class Hospital:
 #====================================functional declration===============================
 
     def iPrescriptionData(self):
-        if self.vaccine.get()=="" or self.name.get()=="":
-            messagebox.showerror("Error","All fiels are required.")
-        else: 
-            conn=mysql.connector.connect(host="localhost", user="root",password="Mmy.2019", database="mydata")
-            my_cursor=conn.cursor()
-            my_cursor.execute("insert into hospital values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(
-                                                            self.vaccine.get(),
-                                                            self.name.get(),
-                                                            self.place.get(),
-                                                            self.date.get(),
-                                                            self.batchno.get(),
-                                                            self.pname.get(),
-                                                            self.address.get(),
-                                                            self.nic.get(),
-                                                            self.age.get(),
-                                                            self.gender.get(),
-                                                            self.bloodgrp.get(),
-                                                            self.bod.get(),
-                                                            self.effects.get(),
-                                                            self.bodytemp.get(),
-                                                            self.bloodp.get(),
-                                                            self.contactno.get(),
-                                                            self.email.get(),
-                                                            self.remark.get()
-                ))
-            conn.commit()
-            self.fatch_data()
-            conn.close()
-            messagebox.showinfo("Success", "Record has been Inserted")
+        # Insert data into SQLite table
+        self.cursor.execute("INSERT INTO hospital VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                            (self.vaccine.get(), self.name.get(), self.place.get(), self.date.get(),
+                             self.batchno.get(), self.pname.get(), self.address.get(), self.nic.get(),
+                             self.age.get(), self.gender.get(), self.bloodgrp.get(), self.bod.get(),
+                             self.effects.get(), self.bodytemp.get(), self.bloodp.get(), self.contactno.get(),
+                             self.email.get(), self.remark.get()))
+        self.conn.commit()
+        self.fatch_data()
+        messagebox.showinfo("Success", "Record has been Inserted")
+        # if self.vaccine.get()=="" or self.name.get()=="":
+        #     messagebox.showerror("Error","All fiels are required.")
+        # else:
+        #     conn=mysql.connector.connect(host="localhost", user="root",password="Mmy.2019", database="mydata")
+        #     my_cursor=conn.cursor()
+        #     my_cursor.execute("insert into hospital values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(
+        #                                                     self.vaccine.get(),
+        #                                                     self.name.get(),
+        #                                                     self.place.get(),
+        #                                                     self.date.get(),
+        #                                                     self.batchno.get(),
+        #                                                     self.pname.get(),
+        #                                                     self.address.get(),
+        #                                                     self.nic.get(),
+        #                                                     self.age.get(),
+        #                                                     self.gender.get(),
+        #                                                     self.bloodgrp.get(),
+        #                                                     self.bod.get(),
+        #                                                     self.effects.get(),
+        #                                                     self.bodytemp.get(),
+        #                                                     self.bloodp.get(),
+        #                                                     self.contactno.get(),
+        #                                                     self.email.get(),
+        #                                                     self.remark.get()
+        #         ))
+        #     conn.commit()
+        #     self.fatch_data()
+        #     conn.close()
+        #     messagebox.showinfo("Success", "Record has been Inserted")
 
 
     def update_data(self):
-        conn=mysql.connector.connect(host="localhost", user="root",password="Mmy.2019", database="mydata")
-        my_cursor=conn.cursor()
-        my_cursor.execute("update hospital  set vaccine_dose=%s, name=%s, place=%s, date=%s, p_name=%s,"
-                            "address=%s, nic_no=%s, age=%s, gender=%s, blood_grp=%s, DOB=%s, effects=%s,"
-                            "body_temp=%s, blood_p=%s, contact_no=%s, email=%s, remark=%s where batch_no=%s"
-                            ,(
-                                self.vaccine.get(), self.name.get(), self.place.get(), 
+        conn = sqlite3.connect('hospital.db')
+        my_cursor = conn.cursor()
+        my_cursor.execute("UPDATE hospital SET vaccine_dose=?, name=?, place=?, date=?, p_name=?,"
+                            "address=?, nic_no=?, age=?, gender=?, blood_grp=?, DOB=?, effects=?,"
+                            "body_temp=?, blood_p=?, contact_no=?, email=?, remark=? WHERE batch_no=?",
+                            (
+                                self.vaccine.get(), self.name.get(), self.place.get(),
                                 self.date.get(),self.pname.get(),self.address.get(),self.nic.get(),self.age.get(),
                                 self.gender.get(),self.bloodgrp.get(),self.bod.get(),
                                 self.effects.get(),self.bodytemp.get(),self.bloodp.get(),
                                 self.contactno.get(),self.email.get(),self.remark.get(), self.batchno.get(),
-                        ))
+                            ))
         conn.commit()
-        self.fatch_data()
         conn.close()
+        self.fatch_data()
         messagebox.showinfo("Update",   "Record has been updated Successfully")
 
     def fatch_data(self):
-        conn=mysql.connector.connect(host="localhost", user="root",password="Mmy.2019", database="mydata")
-        my_cursor=conn.cursor()
-        my_cursor.execute("select * from hospital")
-        rows=my_cursor.fetchall()
-        if len(rows)!=0:
+        # Fetch data from SQLite table
+        self.cursor.execute("SELECT * FROM hospital")
+        rows = self.cursor.fetchall()
+        if len(rows) != 0:
             self.hospital_table.delete(*self.hospital_table.get_children())
             for i in rows:
-                self.hospital_table.insert("",END,values=i)
-            conn.commit()
-        conn.close()
+                self.hospital_table.insert("", END, values=i)
+            self.conn.commit()
 
 
 
@@ -367,19 +391,14 @@ class Hospital:
 
 
     def iDelete(self):
-        conn=mysql.connector.connect(host="localhost", user="root",password="Mmy.2019", database="mydata")
-        my_cursor=conn.cursor()
-        query="delete from hospital where batch_no=%s"
-        Value=(self.batchno.get(),)
-        my_cursor.execute(query,Value)
-
-        conn.commit()
-        conn.close()
+        # Delete record from SQLite table
+        self.cursor.execute("DELETE FROM hospital WHERE batch_no=?", (self.batchno.get(),))
+        self.conn.commit()
         self.fatch_data()
-        messagebox.showinfo("Delete","Patient has been deleted successfully")
-
+        messagebox.showinfo("Delete", "Patient has been deleted successfully")
 
     def clear(self):
+        # Clear all entry fields and text widget
         self.vaccine.set("")
         self.name.set("")
         self.place.set("")
@@ -398,14 +417,16 @@ class Hospital:
         self.contactno.set("")
         self.email.set("")
         self.remark.set("")
-        self.txtPrescription.delete("1.0",END)
-
+        self.txtPrescription.delete("1.0", END)
 
     def iExit(self):
-        iExit=messagebox.askyesno("Vaccination Detail Collector","Do you want to Exit?")
-        if iExit>0:
-            root.destroy()
-            return
+        # Ask for confirmation before exiting
+        if messagebox.askyesno("Vaccination Detail Collector", "Do you want to Exit?"):
+            self.root.destroy()
+
+    def __del__(self):
+        # Close SQLite database connection
+        self.conn.close()
 
 
 root=Tk()
